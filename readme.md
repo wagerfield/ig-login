@@ -36,7 +36,7 @@ npm run test:watch
 
 ## Problem
 
-When logging into IG, the password can be optionally encrypted for extra security to help prevent "man in the middle" attacks.
+When logging into IG via the API, the password can be optionally encrypted for extra security to help prevent "man in the middle" attacks.
 
 To send the password encrypted, an `encryptionKey` and `timeStamp` must first be requested via the `session/encryptionKey` [endpoint](https://labs.ig.com/rest-trading-api-reference/service-detail?id=522). 
 
