@@ -42,7 +42,9 @@ To send the password encrypted, an `encryptionKey` and `timeStamp` must first be
 
 The returned `encryptionKey` is in `base64` format.
 
-What is unclear to me is how the RSA token should be generated. This [post](https://labs.ig.com/node/295) discusses the problem, but the solution is not obvious to me.
+What is unclear to me is how the RSA token should be generated.
+
+This [post](https://labs.ig.com/node/295) discusses the problem, but the solution is still not obvious to me.
 
 So far I have gathered that the `encryptionKey` is to be used to create an RSA token and then the password should be encrypted with the `timeStamp` like so:
 
@@ -53,9 +55,9 @@ password + "|" + timeStamp
 I am attempting to use the popular [`node-rsa`](https://www.npmjs.com/package/node-rsa) package to create the RSA token. However, I would like to know:
 
 1. What [format](https://www.npmjs.com/package/node-rsa#format-string-syntax) should the RSA `key` be in?
-  - `pkcs1` or `pkcs8`?
-  - `public` or `private`?
-  - `pem` or `der`?
+    - `pkcs1` or `pkcs8`?
+    - `public` or `private`?
+    - `pem` or `der`?
 2. Should I wrap the `encryptionKey` in a header and footer?
 3. Does the `encryptionKey` need to be decoded from `base64` before it is used?
 
