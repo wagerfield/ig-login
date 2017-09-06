@@ -14,7 +14,8 @@
     "axios": "^0.16.2",
     "dotenv": "^4.0.0",
     "es6-promise": "^4.1.1",
-    "node-rsa": "^0.4.2"
+    "node-rsa": "^0.4.2",
+    "pidcrypt": "0.0.31" 
   },
   "devDependencies": {
     "babel-preset-env": "^1.6.0",

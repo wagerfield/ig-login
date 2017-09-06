@@ -1,6 +1,9 @@
 import 'es6-promise/auto'
 import { create } from 'axios'
-import RSA from 'node-rsa'
+import pidCrypt from 'pidcrypt'
+import pidCryptUtil from 'pidcrypt/pidCrypt_util'
+import 'pidcrypt/rsa';
+import 'pidcrypt/asn1';
 
 export default class IG {
 
@@ -23,7 +26,7 @@ export default class IG {
   }
 
   login(username, password, encrypt = false) {
-    
+
     const loginData = {
       encryptedPassword: encrypt,
       identifier: username,
@@ -31,25 +34,34 @@ export default class IG {
     }
 
     if (encrypt) {
-      
+
       // https://labs.ig.com/rest-trading-api-reference/service-detail?id=522
       return this.request('get', 'session/encryptionKey')
         .then((response) => {
 
+          // base64 encoded encryptionKey and timeStamp
           const { encryptionKey, timeStamp } = response.data
 
-          // https://www.npmjs.com/package/node-rsa#usage
-          const header = '-----BEGIN PUBLIC KEY-----'
-          const footer = '-----END PUBLIC KEY-----'
-          // const decodedKey = Buffer.from(encryptionKey, 'base64')
-          const keyData = `${header}${encryptionKey}${footer}`
-          const key = new RSA(keyData, 'pkcs8-public-pem')
-          const encryptedPassword = key.encrypt(`${password}|${timeStamp}`, 'base64')
-          
+          const passwordToEncrypt = `${password}|${timeStamp}`
+
+          const rsa = new pidCrypt.RSA()
+
+          // Decode encryptionKey from base64
+          const encryptKey = pidCryptUtil.decodeBase64(encryptionKey)
+
+          // ASN1 parsing
+          const asn = pidCrypt.ASN1.decode(pidCryptUtil.toByteArray(encryptKey))
+          const tree = asn.toHexTree();
+
+          // setting the public key for encryption with retrieved ASN.1 tree
+          rsa.setPublicKeyFromASN(tree);
+
+          const encrypted = rsa.encrypt(passwordToEncrypt)
+
+          // Encode encrypted to base64
+          const encryptedPassword = pidCryptUtil.encodeBase64(pidCryptUtil.convertFromHex(encrypted))
+
           loginData.password = encryptedPassword
-          
-          console.log('keyData:', keyData)
-          console.log('encryptedPassword:', encryptedPassword)
 
           return this.request('post', 'session', 2, loginData)
         })
