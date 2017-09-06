@@ -38,7 +38,7 @@ npm run test:watch
 
 When logging into IG via the API, the password can be optionally encrypted for extra security to help prevent "man in the middle" attacks.
 
-To send the password encrypted, an `encryptionKey` and `timeStamp` must first be requested via the `session/encryptionKey` [endpoint](https://labs.ig.com/rest-trading-api-reference/service-detail?id=522). 
+To send the password encrypted, an `encryptionKey` and `timeStamp` must first be requested via the `session/encryptionKey` [endpoint](https://labs.ig.com/rest-trading-api-reference/service-detail?id=522).
 
 The returned `encryptionKey` is in `base64` format.
 
@@ -55,10 +55,10 @@ password + "|" + timeStamp
 I am attempting to use the popular [`node-rsa`](https://www.npmjs.com/package/node-rsa) package to create the RSA token. However, I would like to know:
 
 1. What [format](https://www.npmjs.com/package/node-rsa#format-string-syntax) should the RSA `key` be in?
-    - `pkcs1` or `pkcs8`?
-    - `public` or `private`?
+    - `pkcs1` or `pkcs8`? Should be `pkcs1`
+    - `public` or `private`? Should be `public`
     - `pem` or `der`?
 2. Should I wrap the `encryptionKey` in a header and footer?
-3. Does the `encryptionKey` need to be decoded from `base64` before it is used?
+3. Does the `encryptionKey` need to be decoded from `base64` before it is used? It should be decoded, yes.
 
-The relevant code that configures the RSA key can be [seen here](https://github.com/wagerfield/ig-login/blob/master/index.js#L42-L47). 
+The relevant code that configures the RSA key can be [seen here](https://github.com/wagerfield/ig-login/blob/master/index.js#L42-L47).
